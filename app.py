@@ -39,8 +39,6 @@ def get_video_info():
 import requests
 from flask import Response
 
-import pty
-import os
 
 
 if __name__ == '__main__':
