@@ -38,13 +38,7 @@ document.getElementById('url-form').addEventListener('submit', async function(ev
                 formatDescription += ` (${(format.filesize / 1024 / 1024).toFixed(2)} MB)`;
             }
 
-            const downloadLink = document.createElement('a');
-            downloadLink.href = `/download?url=${encodeURIComponent(url)}&format_id=${format.format_id}`;
-            downloadLink.textContent = 'Download';
-            downloadLink.classList.add('download-button');
-
             formatElement.innerHTML = `<span>${formatDescription}</span>`;
-            formatElement.appendChild(downloadLink);
             formatsContainer.appendChild(formatElement);
         });
 

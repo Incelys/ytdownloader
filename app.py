@@ -36,24 +36,11 @@ def get_video_info():
             return jsonify({'error': 'TikTok is blocking requests from this server. Please try again later.'}), 400
         return jsonify({'error': error_message}), 500
 
-@app.route('/download')
-def download():
-    url = request.args.get('url')
-    format_id = request.args.get('format_id')
-    if not url or not format_id:
-        return "URL and format_id are required", 400
+import requests
+from flask import Response
 
-    ydl_opts = {
-        'format': format_id,
-    }
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        try:
-            info = ydl.extract_info(url, download=False)
-            download_url = info['url']
-            from flask import redirect
-            return redirect(download_url)
-        except Exception as e:
-            return str(e), 500
+import pty
+import os
 
 
 if __name__ == '__main__':
