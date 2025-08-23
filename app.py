@@ -9,13 +9,13 @@ def index():
 
 @app.route('/get_video_info', methods=['POST'])
 def get_video_info():
-    url = request.json.get('url')
-    if not url:
-        return jsonify({'error': 'URL is required'}), 400
+    try:
+        url = request.json.get('url')
+        if not url:
+            return jsonify({'error': 'URL is required'}), 400
 
-    ydl_opts = {'quiet': True}
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        try:
+        ydl_opts = {'quiet': True}
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             formats = []
             for f in info['formats']:
@@ -28,13 +28,13 @@ def get_video_info():
                     'vcodec': f.get('vcodec')
                 })
             return jsonify({'title': info['title'], 'formats': formats})
-        except yt_dlp.utils.DownloadError as e:
-            error_message = str(e)
-            if 'instagram' in error_message.lower():
-                return jsonify({'error': 'This Instagram Reel may be private or require a login to view. This downloader can only access public content.'}), 400
-            if 'tiktok' in error_message.lower() and 'ip address is blocked' in error_message.lower():
-                return jsonify({'error': 'TikTok is blocking requests from this server. Please try again later.'}), 400
-            return jsonify({'error': error_message}), 500
+    except Exception as e:
+        error_message = str(e)
+        if 'instagram' in error_message.lower():
+            return jsonify({'error': 'This Instagram Reel may be private or require a login to view. This downloader can only access public content.'}), 400
+        if 'tiktok' in error_message.lower() and 'ip address is blocked' in error_message.lower():
+            return jsonify({'error': 'TikTok is blocking requests from this server. Please try again later.'}), 400
+        return jsonify({'error': error_message}), 500
 
 @app.route('/download')
 def download():
